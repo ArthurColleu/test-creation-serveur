@@ -1,0 +1,33 @@
+@BASE_URL = http://localhost:8000
+
+@Id_contact = 3
+### Create a new contact
+POST {{BASE_URL}}/contacts
+Content-Type: application/json
+
+{
+    "id":6,
+    "nom": "Anne Marie",
+    "telephone": "07 89 67 45 32"
+}
+
+### Get contact by ID
+GET {{BASE_URL}}/contacts/{{Id_contact}}
+Content-Type: application/json
+
+### Get all contacts
+GET {{BASE_URL}}/contacts
+Content-Type: application/json
+
+### Delete contact by ID
+DELETE {{BASE_URL}}/contacts/{{Id_contact}}
+Content-Type: application/json
+
+### Put contact by ID
+PUT {{BASE_URL}}/contacts/{{Id_contact}}
+Content-Type: application/json
+
+{
+    "nom": "Jean Dupont",
+    "telephone": "06 12 34 56 78"
+}
