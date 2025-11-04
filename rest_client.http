@@ -1,0 +1,28 @@
+@BASE_URL=http://localhost:8000
+@IDREQUEST=1
+###
+GET {{BASE_URL}}/contacts
+Content-Type: application/json
+###
+GET {{BASE_URL}}/contacts/{{IDREQUEST}}
+Content-Type: application/json
+###
+POST {{BASE_URL}}/contacts
+Content-Type: application/json
+
+{
+    "nom":"Jean",
+    "telephone":"+33 7 42 63 58 47"
+}
+###
+DELETE {{BASE_URL}}/contacts/.{{IDREQUEST}}
+
+###
+PUT {{BASE_URL}}/contacts/{{IDREQUEST}}
+Content-Type: application/json
+
+{
+    "name":"Michel",
+    "telephone":"+33 6 58 47 24 36"
+}
+

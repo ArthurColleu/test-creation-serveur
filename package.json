@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +15,9 @@
   "type": "commonjs",
   "dependencies": {
     "@types/node": "^24.10.0"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^4.0.6",
+    "vitest": "^4.0.6"
   }
 }
