@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "nom": "Alice Dupont",
+    "telephone": "+33 6 12 34 56 78"
+  },
+  {
+    "id": 2,
+    "nom": "Bruno Martin",
+    "telephone": "+33 7 98 76 54 32"
+  },
+  {
+    "id": 3,
+    "nom": "Claire Bernard",
+    "telephone": "+33 6 23 45 67 89"
+  },
+  {
+    "id": 4,
+    "nom": "David Moreau",
+    "telephone": "+33 7 11 22 33 44"
+  },
+  {
+    "id": 5,
+    "nom": "Emma Leroy",
+    "telephone": "+33 6 55 66 77 88"
+  }
+]
