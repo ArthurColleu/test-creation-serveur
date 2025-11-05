@@ -1,40 +1,53 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
-import server from './testCreatedServer';
+import app from './testCreatedServer.js';
 
-
-describe('API en vanilla Node + Supertest', () => {
-  it('GET /hello doit retourner un message', async () => {
-    const res = await request(server).get('/contacts');
+describe('API Express + Supertest', () => {
+  
+  it('GET /contacts doit retourner un tableau', async () => {
+    const res = await request(app).get('/contacts');
     expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
   });
 
-  it('GET by ID', async () => {
-    const res = await request(server).get('/contacts/1');
+  it('GET /contacts/:id doit retourner un contact spécifique', async () => {
+    const res = await request(app).get('/contacts/1');
     expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body[0]).toHaveProperty('id', 1);
   });
 
-  it('POST /echo doit renvoyer le JSON envoyé', async () => {
+  it('POST /contacts doit ajouter un nouveau contact', async () => {
     const body = {
-    "nom": "Shanks Leox",
-    "telephone": "+33 6 55 66 77 88"
-  };
-    const res = await request(server)
+      nom: 'Shanks Leox',
+      telephone: '+33 6 55 66 77 88'
+    };
+
+    const res = await request(app)
       .post('/contacts')
       .send(body)
       .set('Content-Type', 'application/json');
 
     expect(res.statusCode).toBe(201);
-    const res2 = await request(server).get('/contacts/6');
+    expect(Array.isArray(res.body)).toBe(true);
+
+    const createdContact = res.body.at(-1);
+    expect(createdContact.nom).toBe(body.nom);
+
+    const res2 = await request(app).get(`/contacts/${createdContact.id}`);
     expect(res2.statusCode).toBe(200);
-    //expect(res.body).toEqual({ youSent: body });
+    expect(res2.body[0].nom).toBe(body.nom);
   });
 
   it('DELETE /contacts/:id doit supprimer le contact', async () => {
-    const res = await request(server).delete('/contacts/6');
+    const res = await request(app).delete(`/contacts/6`);
     expect(res.statusCode).toBe(204);
-    const res2 = await request(server).get('/contacts/6');
+
+    const res2 = await request(app).get(`/contacts/6`);
     expect(res2.statusCode).toBe(404);
+  });
 });
 
+afterAll(() => {
+  console.log('✅ Tests terminés.');
 });

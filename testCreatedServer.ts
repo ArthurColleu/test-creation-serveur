@@ -1,85 +1,62 @@
-import http from 'http';
-import contacts from './contacts.json';
+import express from 'express';
 import fs from 'fs';
+import contacts from './contacts.json';
 
-const server = http.createServer((req, res) => {
-    // Définir le header de réponse
-    res.setHeader('Content-Type', 'application/json');
+const app = express();
+const PORT = 3000;
 
-    // Redirection de /contacts/ vers /contacts
-    if(req.url === '/contacts/'){
-        res.writeHead(301, { 'Location': '/contacts' });
-        res.end();
-        return;
-    }
-    // Route pour ajouter un nouveau contact
-    if (req.url === '/contacts') {
-        // Route pour tous les contacts
-        if ( req.method === 'GET') {
-            res.writeHead(200);
-            res.end(JSON.stringify(contacts));
-            return;
-        } else if (req.method === 'POST') {
-            //Récupére le body de la requête contenant le nouveau contact
-            let body = '';
+app.use(express.json());
 
-            req.on('data', chunk => {
-                body += chunk.toString();
-            });
-            req.on('end', () => {
-                const newContact = JSON.parse(body);
-                newContact.id = contacts.length + 1;
-                contacts.push(newContact);
-                fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
-                res.writeHead(201);
-                res.end(JSON.stringify(contacts));
-            });
-            return;
-        } else {
-            res.writeHead(405);
-            res.end(JSON.stringify({ error: 'Method Not Allowed' }));
-            return;
-        }
-    }
-    
-    
-    // Route pour un contact spécifique : /contacts/1 par exemple
-    const contactIdMatch = req.url ? req.url.match(/^\/contacts\/(\d+)$/) : null;
-
-    if (contactIdMatch) {
-        if (req.method === 'DELETE') {
-            const id = parseInt(contactIdMatch[1], 10);
-            const contactIndex = contacts.findIndex(c => c.id === id);
-            if (contactIndex !== -1) {
-                contacts.splice(contactIndex, 1);
-                fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
-                res.writeHead(204);
-                res.end();
-                return;
-            } else {
-                res.writeHead(404);
-                res.end(JSON.stringify({ error: 'Contact not found' }));
-                return;
-            }
-        }
-        else if (req.method === 'GET') {
-            const id = parseInt(contactIdMatch[1], 10);
-            const contact = contacts.find(c => c.id === id);
-            if (contact) {
-                res.writeHead(200);
-                res.end(JSON.stringify([contact]));
-                return;
-            } else {
-                res.writeHead(404);
-                res.end(JSON.stringify({ error: 'Contact not found' }));
-                return;
-            }
-        }
-    }
-
-    // Si aucune route ne correspond
-    res.writeHead(404);
-    res.end(JSON.stringify({ error: 'Not Found' }));
+app.get('/contacts', (req, res) => {
+  res.status(200).json(contacts);
 });
 
-export default server;
+app.get('/contacts/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const contact = contacts.find(c => c.id === id);
+
+  if (!contact) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  res.status(200).json([contact]);
+});
+
+app.post('/contacts', (req, res) => {
+  const newContact = req.body;
+
+  if (!newContact || !newContact.nom) {
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+
+  newContact.id = contacts.length + 1;
+  contacts.push(newContact);
+
+  fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
+
+  res.status(201).json(contacts);
+});
+
+app.delete('/contacts/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const index = contacts.findIndex(c => c.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+
+  contacts.splice(index, 1);
+  fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
+
+  res.status(204).send();
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
+export default app;
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+}
