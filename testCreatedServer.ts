@@ -23,6 +23,7 @@ app.get('/contacts/:id', (req, res) => {
 });
 
 app.post('/contacts', (req, res) => {
+
   const newContact = req.body;
 
   if (!newContact || !newContact.nom) {
@@ -30,6 +31,15 @@ app.post('/contacts', (req, res) => {
   }
 
   newContact.id = contacts.length + 1;
+  app.get('/contacts', (req, res) => {
+    const idExists = contacts.some(c => c.id === newContact.id);
+    if (idExists) {
+      return res.status(409).json({ error: 'Conflict: ID already exists' });
+    }
+    res.status(200).json(contacts);
+  });
+
+
   contacts.push(newContact);
 
   fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
