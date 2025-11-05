@@ -23,15 +23,5 @@
     "id": 5,
     "nom": "Emma Leroy",
     "telephone": "+33 6 55 66 77 88"
-  },
-  {
-    "id": 6,
-    "nom": "Jonathan Laurent",
-    "telephone": "+33 7 56 78 09 23"
-  },
-  {
-    "id": 7,
-    "nom": "Jon Laurent",
-    "telephone": "+33 7 56 78 09 23"
   }
 ]

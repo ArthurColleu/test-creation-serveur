@@ -48,17 +48,34 @@ const server = http.createServer((req, res) => {
     const contactIdMatch = req.url ? req.url.match(/^\/contacts\/(\d+)$/) : null;
 
     if (contactIdMatch) {
-        const id = parseInt(contactIdMatch[1], 10);
-        const contact = contacts.find(c => c.id === id);
-
-        if (contact) {
-            res.writeHead(200);
-            res.end(JSON.stringify(contact));
-        } else {
-            res.writeHead(404);
-            res.end(JSON.stringify({ error: 'Contact not found' }));
+        if (req.method === 'DELETE') {
+            const id = parseInt(contactIdMatch[1], 10);
+            const contactIndex = contacts.findIndex(c => c.id === id);
+            if (contactIndex !== -1) {
+                contacts.splice(contactIndex, 1);
+                fs.writeFileSync('./contacts.json', JSON.stringify(contacts, null, 2));
+                res.writeHead(204);
+                res.end();
+                return;
+            } else {
+                res.writeHead(404);
+                res.end(JSON.stringify({ error: 'Contact not found' }));
+                return;
+            }
         }
-        return;
+        else if (req.method === 'GET') {
+            const id = parseInt(contactIdMatch[1], 10);
+            const contact = contacts.find(c => c.id === id);
+            if (contact) {
+                res.writeHead(200);
+                res.end(JSON.stringify([contact]));
+                return;
+            } else {
+                res.writeHead(404);
+                res.end(JSON.stringify({ error: 'Contact not found' }));
+                return;
+            }
+        }
     }
 
     // Si aucune route ne correspond
