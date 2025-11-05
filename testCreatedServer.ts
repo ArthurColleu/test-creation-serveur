@@ -82,4 +82,4 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ error: 'Not Found' }));
 });
 
-server.listen(8000);
+export default server;
