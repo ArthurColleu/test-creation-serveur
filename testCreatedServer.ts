@@ -1,6 +1,5 @@
 import http from 'http';
 import contacts from './contacts.json';
-import writeDataToFile from 'util';
 import fs from 'fs';
 
 const server = http.createServer((req, res) => {

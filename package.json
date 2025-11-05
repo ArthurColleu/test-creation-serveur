@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "supertest": "node --test --loader ts-node/esm supertest.test.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
@@ -14,10 +15,16 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@types/node": "^24.10.0"
+    "@types/node": "^24.10.0",
+    "express": "^5.1.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/supertest": "^6.0.3",
     "@vitest/ui": "^4.0.6",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.6"
   }
 }
