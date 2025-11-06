@@ -1,11 +1,37 @@
 import express from 'express';
-import fs from 'fs';
+import fs, { mkdir } from 'fs';
 import contacts from './contacts.json';
+import pino, { destination } from 'pino';
+import { log } from 'console';
+const pinohttp = require('pino-http')()
+
+const expressLoger=require('express-pino-logger');
+
 
 const app = express();
 const PORT = 3000;
 
+app.use(pinohttp);
 app.use(express.json());
+
+//écrire dans le fichier logs.json les logs
+
+
+
+
+    const logger = pino({ 
+      transport: {
+         target : "pino/file",
+         options: { destination: "/logs.json"}}
+       
+    });
+
+app.use(expressLoger({logger}));
+
+app.get('/', function (req, res) {
+  req.log.info('something');
+  res.send('hello world');
+})
 
 app.get('/contacts', (req, res) => {
   res.status(200).json(contacts);

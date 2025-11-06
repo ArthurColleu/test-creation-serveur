@@ -3,6 +3,12 @@ import request from 'supertest';
 import app from './testCreatedServer.js';
 
 describe('API Express + Supertest', () => {
+
+  it('Test pino logger /contacts doit retourner hello world', async () => {
+    const res = await request(app).get('/');
+    expect(res.statusCode).toBe(200);
+    expect(res.text).toBe('hello world');
+  });
   
   it('GET /contacts doit retourner un tableau', async () => {
     const res = await request(app).get('/contacts');
